@@ -1,6 +1,6 @@
 <template>
   <div style="height:600px; width:800px">
-    <l-map ref="map" id="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
+    <l-map ref="map" id="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" @ready="readyFunction">
       <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
         name="OpenStreetMap"></l-tile-layer>
     </l-map>
@@ -28,24 +28,22 @@ export default {
     };
   },
   methods: {
-    setupAerisMapgl() {
+    setupAerisMapgl(map) {
       const account = new mapsgl.Account(
         "CLIENT_ID",
-        "SECRET"
+        "CLIENT_SECRET"
       );
-      const controller = new mapsgl.LeafletMapController(this.$refs.map, {
+      const controller = new mapsgl.LeafletMapController(map, {
         account,
       });
-      console.log(controller)
-      //controller.on("load", () => {
-      //  controller.addWeatherLayer("radar");
-      //});
+      controller.on("load", () => {
+        controller.addWeatherLayer("radar");
+      });
+    },
+    readyFunction(map) {
+      this.setupAerisMapgl(map);
     }
   },
-  mounted() {
-    this.$refs.map
-    this.setupAerisMapgl()
-  }
 }
 </script>
 
